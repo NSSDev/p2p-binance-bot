@@ -26,7 +26,7 @@ def add_subscription(id):
         password=config.PG_PASSWORD)
     conn.autocommit = True
     cursor = conn.cursor()
-    cursor.execute(f"SELECT subscription VALUES FROM users WHERE user_id = {id}")
+    # cursor.execute(f"SELECT subscription VALUES FROM users WHERE user_id = {id}")
     # count = map(list, list(cursor.fetchall()))
     # count = sum(count, [])
     # if count[0] != 0:
@@ -38,7 +38,7 @@ def add_subscription(id):
     conn.close()
 
 
-def update_subscription(id):
+def update_subscription(id,bot):
     conn = psycopg2.connect(
         host=config.PG_HOST,
         database=config.PG_DB,
@@ -50,6 +50,10 @@ def update_subscription(id):
     x = map(list, list(cursor.fetchall()))
     x = sum(x, [])
     if x[0] == 0:
+        cursor.close()
+        conn.close()
+    if x[0] == 3:
+        bot.send_message(id,text="До окончания вашей подписки осталось 3 дня. Приобретите подписку пожалуйста.")
         cursor.close()
         conn.close()
     sql = f"""UPDATE users

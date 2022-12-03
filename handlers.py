@@ -87,10 +87,14 @@ def handle_buttons(message):
             markup.row(button_normal_data,button_exclusive_data,button_back)
             bot.send_message(message.chat.id, text='Выберите способ получения связок',reply_markup=markup)
         if message.text == "💎Получить эксклюзивные связки":
-            bot.send_message(message.chat.id, text='Идет анализ таблицы связок.Пожалуйста подождите немного.')
+            bot.send_message(message.chat.id, text='⏱Идет анализ таблицы эксклюзивных связок. Пожалуйста подождите немного.')
+            bot.send_message(message.chat.id, text='⚙️ P2P связки в обход блокировки Т+1')
+            bot.send_message(message.chat.id, text='❗️Главное правило - покупаем как "ТЕЙКЕР", продаем как "МЕЙКЕР".')
             scrape.get_exclusive_data(message.chat.id,bot)
         if message.text == "⛓Получить связки":
-            bot.send_message(message.chat.id, text='Идет анализ таблицы связок.Пожалуйста подождите немного.')
+            bot.send_message(message.chat.id, text='⏱Идет анализ таблицы связок.Пожалуйста подождите немного.')
+            bot.send_message(message.chat.id, text='⚙️P2P связки в обход блокировки Т+1')
+            bot.send_message(message.chat.id, text='❗️Главное правило - покупаем как "ТЕЙКЕР", продаем как "МЕЙКЕР".')
             scrape.get_normal_data(message.chat.id,bot)
 
 
@@ -116,12 +120,18 @@ def handle_buttons(message):
             db.get_subscribers(message.chat.id, bot)
     else:
         button_faq = types.KeyboardButton(text="📃FAQ")
-        markup.row(button_faq)
+        button_payment = types.KeyboardButton(text="💸Оплата")
+        markup.row(button_faq,button_payment)
         bot.send_message(message.chat.id, text=messages.access_message, reply_markup=markup, parse_mode="MarkdownV2")
-        bot.id
         if message.text == "📃FAQ":
             bot.send_message(message.chat.id, text=messages.faq_message,
                              reply_markup=markup, parse_mode="MarkdownV2")
+        if message.text == "💸Оплата":
+            button_payment_method = types.KeyboardButton(text="Другой способ")
+            markup.row(button_payment_method)
 
+            payment.pay(message.chat.id,bot, markup)
+            db.add_subscription(message.chat.id)
+        bot.id
 
 bot.infinity_polling(none_stop=True)
